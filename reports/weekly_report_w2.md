@@ -16,3 +16,8 @@ Chưa thiết kế được giao diện trang chủ hoàn chỉnh
 
 Xây dựng hoàn thiện giao diện người dùng
 Xây dựng một phần cho thông tin về bãi đỗ xe
+
+---
+# Báo cáo của thành viên
+
+## Phan Huy Dương (C)   
