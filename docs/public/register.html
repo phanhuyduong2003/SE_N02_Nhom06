@@ -5,21 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng kí</title>
-    <link rel="stylesheet" href="./css/form.css">
+    <link rel="stylesheet" href="./css/register.css">
     <link rel="shortcut icon" href="./img/car_parking.png" type="image/x-icon">
 </head>
 <body>
-    <div class="form register">
+    <div class="container">
         <h1 class="heading">Register</h1>
-        <input type="text" placeholder="Enter your name" class="name" required>
-        <p class="message"></p>
-        <input type="email" placeholder="Enter your email" class="email" required>
-        <p class="message"></p>
-        <input type="password" placeholder="Create your password" class="password" required>
-        <p class="message"></p>
-        <button class="btn-submit">Register</button>
-        <a href="#" class="link">Already have an account? Log in here</a>
+        <form action="/register" method="POST" class="register-form">
+            <input type="text" placeholder="Enter your name" class="name" required>
+            <p class="message"></p>
+            <input type="email" placeholder="Enter your email" class="email" required>
+            <p class="message"></p>
+            <input type="password" placeholder="Create your password" class="password" required>
+            <p class="message"></p>
+            <button class="btn-submit">Register</button>
+            <a href="./login.html" class="link">Already have an account? Log in here</a>
+        </form>
     </div>
-    <script src="/js/form.js"></script>
+    <script src="/js/form.js" type="text/javascript"></script>
 </body>
 </html>

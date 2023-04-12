@@ -6,7 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Trang chủ</title>
     <link rel="stylesheet" href="./css/home.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link
       rel="shortcut icon"
       href="./img/car_parking.png"
@@ -17,6 +23,7 @@
     <div class="container">
       <nav class="nav">
         <ul class="left-nav">
+          <li><button class="openbtn" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button></li>
           <li>
             <a href="#"
               ><img src="./img/car_parking.png" alt="" class="logo"
@@ -24,17 +31,28 @@
           </li>
           <li><a href="#">Bãi đỗ xe</a></li>
           <li><a href="#">Liên hệ</a></li>
-          <li>
+          <!-- <li>
             <form action="" class="search-form">
               <input type="text" name="search" placeholder="Nhập thông tin bãi đỗ xe cần tìm kiếm" class="search"/>
               <button type="submit" class="search-icon"><i class="fa fa-search"></i></button>
             </form>
-          </li>
+          </li> -->
         </ul>
         <ul class="right-nav">
           <li><a href="#">Profile</a></li>
+          <button class="login-button">Đăng nhập</button>
+          <button class="register-button">Đăng kí</button>
         </ul>
       </nav>
+      <div class="sidebar">
+        <a href="#">Tài khoản</a>
+        <a href="#">Bãi đỗ xe</a>
+        <a href="#">Liên hệ</a>
+        <a href="#">Profile</a>
+      </div>
+      <div class="footer">
+        <p>Nhóm 6 - Tìm bãi đỗ xe</p>
+      </div>
     </div>
     <script src="./js/home.js"></script>
   </body>
