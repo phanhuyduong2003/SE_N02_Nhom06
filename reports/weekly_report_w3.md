@@ -17,3 +17,7 @@ Thêm, sửa, xoá bãi đỗ xe
 
 ## Phan Huy Dương (C)   
 Chưa hoàn thiện được back-end để lưu trữ thông tin người dùng
+
+## Vũ Khải Hoàn
+ Đã hoàn thành thanh menu
+
