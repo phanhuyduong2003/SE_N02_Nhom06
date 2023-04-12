@@ -1,33 +1,3 @@
-// const form = [...document.querySelector('.form').children]
-// form.forEach((item, i) => {
-//     setTimeout(() => {
-//         item.style.opacity = 1;
-//     }, i*100);
-// })
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAoIyXQkDT3_eJGdp3_1TM3tMy8_drjP8I",
-  authDomain: "car-parking-auth.firebaseapp.com",
-  projectId: "car-parking-auth",
-  storageBucket: "car-parking-auth.appspot.com",
-  messagingSenderId: "160221815148",
-  appId: "1:160221815148:web:7579ef0f0395c2750a9349",
-  measurementId: "G-KDC6B2NYPE",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = firebaseConfig.auth();
-const database = firebaseConfig.database();
-
 const register = document
   .getElementsByClassName("register")
   .addEventListener("submit", (e) => {
@@ -40,11 +10,12 @@ const register = document
       message.innerHTML = "Please enter your name";
       return;
     } else if (validate_email(email) == false) {
-        message.innerHTML = 'Your email is not in the correct format';
-        return;
+      message.innerHTML = "Your email is not in the correct format";
+      return;
     } else if (validate_password(password) == false) {
-        message.innerHTML = 'Your password is not in the correct format. Password must be at least 6 characters long';
-        return;
+      message.innerHTML =
+        "Your password is not in the correct format. Password must be at least 6 characters long";
+      return;
     }
   });
 function validate_name(full_name) {
@@ -72,3 +43,18 @@ function validate_password(password) {
     return true;
   }
 }
+const express = require("express");
+const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
+const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.post("/register", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const existingUser = await username.findOne({ where: { username } });
+    if (existingUser) {
+      return res.status(409).json({message: 'Username already exists'})
+    }
+  } catch (error) {}
+});
