@@ -20,4 +20,7 @@ Chưa hoàn thiện được back-end để lưu trữ thông tin người dùng
 
 ## Vũ Khải Hoàn
  Đã hoàn thành thanh menu
+ 
+ ## Nguyễn Tiến Dũng
+ Đã hoàn thành footer
 
