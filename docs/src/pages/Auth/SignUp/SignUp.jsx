@@ -1,14 +1,17 @@
 import React from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 import { Container, SignUpForm } from "./SignUpStyle";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontSizeOutlined, LockOutlined, MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
 
 export default function SignUp() {
-  const onFinish = (values) => {
-    console.log("Success:", values);
-  };
-
+  // const onFinish = (values) => {
+  //   console.log("Success:", values);
+  // };
+  const navigate = useNavigate();
+  const onFinish = () => {
+    navigate('/login');
+  }
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
