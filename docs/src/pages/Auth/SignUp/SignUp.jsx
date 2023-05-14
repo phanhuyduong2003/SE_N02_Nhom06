@@ -3,18 +3,39 @@ import { Button, Checkbox, Form, Input } from "antd";
 import { Container, SignUpForm } from "./SignUpStyle";
 import { Link, useNavigate } from "react-router-dom";
 import { FontSizeOutlined, LockOutlined, MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
+import Swal from 'sweetalert2'
 
 export default function SignUp() {
-  // const onFinish = (values) => {
-  //   console.log("Success:", values);
-  // };
   const navigate = useNavigate();
-  const onFinish = () => {
-    navigate('/login');
+  const check = localStorage.getItem('isLoggedIn') === 'true'
+  const onFinish = (values) => {
+    const {cofirm_password, ...formData} = values
+    localStorage.setItem('formData', JSON.stringify(formData))
+    Swal.fire({
+      title: 'Register Successfully!',
+      text: 'Welcome to Find Car Parking',
+      icon: 'success',
+      confirmButtonColor: '#1677ff',
+      timer: 5000
+    })
+    navigate('/signin');
   }
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+  if (check) {
+    setTimeout(() => {
+      navigate('/')
+    }, 3000)
+    Swal.fire({
+      title: "You are logged in",
+      text: "You cannot access this page unless you are logged out",
+      icon: "warning",
+      confirmButtonColor: "#1677ff",
+      timer: 3000,
+      showConfirmButton: false,
+    });
+  }
   return (
     <Container>
       <SignUpForm>

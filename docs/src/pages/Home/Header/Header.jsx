@@ -1,19 +1,18 @@
-import {
-  SearchOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { Input, Menu } from "antd";
+import { SearchOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Input, Menu } from "antd";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 export default function Header() {
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === 'true';
   const [current, setCurrent] = useState("mail");
+  const navigate = useNavigate("/");
   const onClick = (e) => {
     console.log("click ", e);
     setCurrent(e.key);
   };
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
+    // localStorage.removeItem("isLoggedIn");
+    localStorage.setItem("isLoggedIn", 'false');
     window.location.reload();
   };
   const items_left = [
@@ -29,7 +28,7 @@ export default function Header() {
       ),
     },
     {
-      label: <Link to="">Reservation</Link>,
+      label: <Link to="">My Reservation</Link>,
       key: "booking",
     },
     {
@@ -72,14 +71,10 @@ export default function Header() {
       key: "Account",
       icon: <UserOutlined />,
       children: [
+        { label: <Link to='/profile'>Profile</Link> },
         {
-          label: (
-            <Link to="/" onClick={handleLogout}>
-              Logout
-            </Link>
-          ),
+          label: <Link onClick={handleLogout}>Logout</Link>,
         },
-        { label: <Link to="/profile">Profile</Link> },
       ],
     },
   ];

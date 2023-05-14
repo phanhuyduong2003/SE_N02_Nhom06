@@ -6,6 +6,7 @@ import Header from "./pages/Home/Header/Header";
 import Content from "./pages/Home/Content/Content";
 import Profile from "./pages/Profile/Profile";
 import About from "./pages/About/About";
+import NotFound from "./pages/Not Found/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -34,11 +35,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/signin",
-    element: <SignIn isLoggedIn={false} />,
+    element: <SignIn/>,
   },
   {
     path: "/signup",
     element: <SignUp />,
   },
+  {
+    path: '*',
+    element: <NotFound/>
+  }
 ]);
 export default router;
