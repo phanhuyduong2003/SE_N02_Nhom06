@@ -1,18 +1,26 @@
 import {
   Button,
-  Cascader,
   DatePicker,
   Form,
   Input,
-  InputNumber,
-  Radio,
   Select,
-  Switch,
-  TreeSelect,
 } from "antd";
-import React, { useState } from "react";
+import React from "react";
 
 export default function Content() {
+  const handleCheckout = (data) => {
+    const date = data.date.toDate();
+    const parking = data['car-parking']
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const time = `${year}-${month < 10 ? "0" + month : month}-${
+      day < 10 ? "0" + day : day
+    }`;
+    // console.log(time);
+    // console.log(data);
+    console.log(`${time}\n ${parking}`);
+  }
   return (
     <div
       className="container"
@@ -22,13 +30,9 @@ export default function Content() {
         alignItems: "center",
         flexDirection: "column",
         height: "100%",
-        padding: '0 90px'
+        padding: "0 90px",
       }}
     >
-      <img
-        src="https://d1gymyavdvyjgt.cloudfront.net/drive/images/uploads/headers/ws_cropper/1_0x0_790x520_0x520_bay_parking_guide.jpg"
-        alt="car" style={{width: '100%', height: '600px'}}
-      />
       <h1 style={{ color: "#1677ff" }}>Booking Car Space</h1>
       <Form
         layout="horizontal"
@@ -39,6 +43,7 @@ export default function Content() {
         style={{
           width: 500,
         }}
+        onFinish={handleCheckout}
       >
         <Form.Item
           name="name"
@@ -70,14 +75,18 @@ export default function Content() {
               message: "Please choose car parking",
             },
           ]}
-          name="car parking"
+          name="car-parking"
         >
           <Select placeholder="Choose car parking">
-            <Select.Option value="#1">Phenikaa University</Select.Option>
-            <Select.Option value="#2">
+            <Select.Option value="Phenikaa University">
+              Phenikaa University
+            </Select.Option>
+            <Select.Option value="Duong Noi Apartment Building">
               Duong Noi Apartment Building
             </Select.Option>
-            <Select.Option value="#3">Xuan Mai Spark Tower</Select.Option>
+            <Select.Option value="Xuan Mai Spark Tower">
+              Xuan Mai Spark Tower
+            </Select.Option>
           </Select>
         </Form.Item>
         <Form.Item
@@ -97,6 +106,11 @@ export default function Content() {
           </Button>
         </Form.Item>
       </Form>
+      <img
+        src="https://d1gymyavdvyjgt.cloudfront.net/drive/images/uploads/headers/ws_cropper/1_0x0_790x520_0x520_bay_parking_guide.jpg"
+        alt="car"
+        style={{ width: "100%", height: "600px" }}
+      />
     </div>
   );
 }

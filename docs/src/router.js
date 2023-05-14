@@ -1,9 +1,11 @@
 import { Outlet, createBrowserRouter } from "react-router-dom";
 import SignIn from "./pages/Auth/SignIn/SignIn";
 import SignUp from "./pages/Auth/SignUp/SignUp";
-import Header from "./pages/Auth/Header/Header";
-import Footer from "./pages/Auth/Footer/Footer";
-import Content from "./pages/Auth/Content/Content";
+import Header from "./pages/Home/Header/Header";
+// import Footer from "./pages/Home/Footer/Footer";
+import Content from "./pages/Home/Content/Content";
+import Profile from "./pages/Profile/Profile";
+import About from "./pages/About/About";
 
 const router = createBrowserRouter([
   {
@@ -12,23 +14,27 @@ const router = createBrowserRouter([
       <>
         <Header />
         <Outlet />
-        <Footer />
+        {/* <Footer /> */}
       </>
     ),
     children: [
       {
         path: "/",
-        element: (
-          <div>
-            <Content />
-          </div>
-        ),
+        element: <Content />,
       },
+      {
+        path: '/profile',
+        element: <Profile/>
+      },
+      {
+        path: '/about',
+        element: <About/>
+      }
     ],
   },
   {
     path: "/signin",
-    element: <SignIn />,
+    element: <SignIn isLoggedIn={false} />,
   },
   {
     path: "/signup",
