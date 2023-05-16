@@ -1,3 +1,4 @@
+import { Form } from "antd";
 import styled from "styled-components";
 export const Container = styled.div`
   display: flex;
@@ -15,4 +16,10 @@ export const SignInForm = styled.div`
   flex-direction: column;
   justify-content: center;
   padding: 40px;
+`;
+export const FormReset = styled(Form)`
+.ant-form-item-control-input-content {
+  display: flex;
+  justify-content: space-around;
+}
 `;

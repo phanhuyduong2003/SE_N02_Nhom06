@@ -2,31 +2,48 @@ import React from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 import { Container, SignUpForm } from "./SignUpStyle";
 import { Link, useNavigate } from "react-router-dom";
-import { FontSizeOutlined, LockOutlined, MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
-import Swal from 'sweetalert2'
+import {
+  FontSizeOutlined,
+  LockOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import Swal from "sweetalert2";
+import unorm from "unorm";
 
 export default function SignUp() {
   const navigate = useNavigate();
-  const check = localStorage.getItem('isLoggedIn') === 'true'
+  const normalizeInput = (event) => {
+    const value = event.target.value;
+    const normalizedValue = unorm.nfd(value).replace(/[\u0300-\u036f]/g, "");
+    event.target.value = normalizedValue;
+  };
+  const check = localStorage.getItem("isLoggedIn") === "true";
   const onFinish = (values) => {
-    const {cofirm_password, ...formData} = values
-    localStorage.setItem('formData', JSON.stringify(formData))
+    // const { cofirm_password, ...formData } = values;
+    localStorage.setItem(
+      "formData",
+      JSON.stringify({
+        email: values.email,
+        phonenumber: values.phonenumber,
+        username: values.username,
+        password: values.password,
+      })
+    );
     Swal.fire({
-      title: 'Register Successfully!',
-      text: 'Welcome to Find Car Parking',
-      icon: 'success',
-      confirmButtonColor: '#1677ff',
-      timer: 5000
-    })
-    navigate('/signin');
-  }
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+      title: "Register Successfully!",
+      text: "Welcome to Find Car Parking",
+      icon: "success",
+      confirmButtonColor: "#1677ff",
+      timer: 5000,
+    });
+    navigate("/signin");
   };
   if (check) {
     setTimeout(() => {
-      navigate('/')
-    }, 3000)
+      navigate("/");
+    }, 3000);
     Swal.fire({
       title: "You are logged in",
       text: "You cannot access this page unless you are logged out",
@@ -41,7 +58,7 @@ export default function SignUp() {
       <SignUpForm>
         <h1
           className="header"
-          style={{ textAlign: "center", paddingBottom: 10 }}
+          style={{ textAlign: "center", paddingBottom: 10, color: '#1677ff' }}
         >
           Sign Up
         </h1>
@@ -51,7 +68,6 @@ export default function SignUp() {
             remember: true,
           }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Form.Item
@@ -60,7 +76,7 @@ export default function SignUp() {
             rules={[
               {
                 required: true,
-                message: "Please input your fullname!",
+                message: "Please enter your fullname",
               },
             ]}
             style={{ display: "flex", flexDirection: "column" }}
@@ -75,11 +91,11 @@ export default function SignUp() {
             rules={[
               {
                 required: true,
-                message: "Please input your phone number!",
+                message: "Please enter your phone number",
               },
               {
                 pattern: /^[0-9]{10}$/,
-                message: "Please input a valid phone number with 10 digits.",
+                message: "Please enter a valid phone number with 10 digits.",
               },
               {
                 pattern: /^\S+$/,
@@ -98,7 +114,7 @@ export default function SignUp() {
             rules={[
               {
                 required: true,
-                message: "Please input your email!",
+                message: "Please enter your email",
               },
               {
                 pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
@@ -117,7 +133,7 @@ export default function SignUp() {
             rules={[
               {
                 required: true,
-                message: "Please input your username!",
+                message: "Please enter your username",
               },
               {
                 pattern: /^\S+$/,
@@ -136,7 +152,7 @@ export default function SignUp() {
             rules={[
               {
                 required: true,
-                message: "Please input your password!",
+                message: "Please enter your password",
               },
               {
                 pattern: /^\S+$/,
@@ -147,6 +163,12 @@ export default function SignUp() {
             <Input.Password
               prefix={<LockOutlined />}
               placeholder="Enter your password"
+              onInput={normalizeInput}
+              onKeyPress={(event) => {
+                if (event.key === " ") {
+                  event.preventDefault();
+                }
+              }}
             />
           </Form.Item>
           <Form.Item
@@ -154,7 +176,7 @@ export default function SignUp() {
             rules={[
               {
                 required: true,
-                message: "Please input your confirm password!",
+                message: "Please enter your confirm password",
               },
               {
                 pattern: /^\S+$/,
@@ -177,12 +199,13 @@ export default function SignUp() {
             <Input.Password
               prefix={<LockOutlined />}
               placeholder="Enter your confirm password"
+              onInput={normalizeInput}
             />
           </Form.Item>
 
-          <Form.Item name="remember" valuePropName="checked">
+          {/* <Form.Item name="remember" valuePropName="checked">
             <Checkbox>Remember me</Checkbox>
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item
             style={{
@@ -193,9 +216,9 @@ export default function SignUp() {
             <Button type="primary" htmlType="submit">
               Submit
             </Button>
-            <Form.Item style={{ display: "flex", justifyContent: "center" }}>
-              <Link to="/signin">Log In</Link>
-            </Form.Item>
+          </Form.Item>
+          <Form.Item style={{ display: "flex", justifyContent: "center" }}>
+            <Link to="/signin">Already have an account? Log In</Link>
           </Form.Item>
         </Form>
       </SignUpForm>

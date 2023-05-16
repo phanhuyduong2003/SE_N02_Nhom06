@@ -36,7 +36,7 @@ export default function Content() {
       <img
         src="https://tfw.wales/sites/default/files/2021-05/Car%20Parking.jpeg"
         alt="car"
-        style={{paddingBottom: 10}}
+        style={{padding: '0 90px 10px 90px'}}
       />
       <div
         style={{
@@ -111,7 +111,7 @@ export default function Content() {
             ]}
             name="date"
           >
-            <DatePicker placeholder="Choose date" style={{ width: "100%" }} />
+            <DatePicker placeholder="Choose date and time" style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item style={{ display: "flex", justifyContent: "center" }}>
             <Button type="primary" htmlType="submit">
