@@ -1,26 +1,41 @@
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  Select,
-} from "antd";
-import React from "react";
+import { Button, DatePicker, Form, Input, Select } from "antd";
+import { getAuth } from "firebase/auth";
+import { child, getDatabase, ref, set } from "firebase/database";
+import { addDoc, collection, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
+import React, { useState } from "react";
+import Swal from "sweetalert2";
+const { RangePicker } = DatePicker;
 
 export default function Content() {
-  const handleCheckout = (data) => {
-    const date = data.date.toDate();
-    const parking = data['car-parking']
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const time = `${year}-${month < 10 ? "0" + month : month}-${
-      day < 10 ? "0" + day : day
-    }`;
-    // console.log(time);
-    // console.log(data);
-    console.log(`${time}\n ${parking}`);
+  const check = localStorage.getItem('isLoggedIn') === 'true'
+  const handleCheckout = async (data) => {
+    if (check) {
+      
+      try {
+        const database = getFirestore()
+      const reservation = collection(database, 'reservations')
+      const reservationData = {
+        name: data.name,
+        license: data.license,
+        parking: data["car-parking"],
+        start: data.date[0].format("DD/MM/YYYY HH:mm"),
+        end: data.date[1].format("DD/MM/YYYY HH:mm"),
+      };
+      await addDoc(reservation, reservationData)
+      console.log(reservation);
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+      Swal.fire({
+        title: 'Bạn chưa đăng nhập',
+        text: 'Vui lòng đăng nhập để đặt chỗ',
+        timer: 3000,
+        confirmButtonColor: '#1677ff',
+        icon: 'error',
+      })
   }
+  };
   return (
     <div
       className="container"
@@ -36,7 +51,6 @@ export default function Content() {
       <img
         src="https://tfw.wales/sites/default/files/2021-05/Car%20Parking.jpeg"
         alt="car"
-        style={{padding: '0 90px 10px 90px'}}
       />
       <div
         style={{
@@ -44,6 +58,7 @@ export default function Content() {
           backgroundColor: "rgba(136, 136, 136, 0.793)",
           padding: 20,
           borderRadius: 6,
+          width: 500,
         }}
       >
         <h1 style={{ color: "#1677ff" }}>Booking Car Space</h1>
@@ -54,7 +69,7 @@ export default function Content() {
           }}
           autoComplete="off"
           style={{
-            width: 500,
+            maxWidth: 1000,
           }}
           onFinish={handleCheckout}
         >
@@ -77,7 +92,7 @@ export default function Content() {
                 message: "Please enter license plates",
               },
             ]}
-            name="license plates"
+            name="license"
           >
             <Input placeholder="Enter license plates. Example: 30A11285" />
           </Form.Item>
@@ -106,12 +121,22 @@ export default function Content() {
             rules={[
               {
                 required: true,
-                message: "Please choose date",
+                message: "Please choose date and time",
               },
             ]}
             name="date"
           >
-            <DatePicker placeholder="Choose date and time" style={{ width: "100%" }} />
+            <RangePicker
+              showTime
+              showSecond={false}
+              format="DD/MM/YYYY HH:mm"
+              placeholder={[
+                "Choose date and time start",
+                "Choose date and time end",
+              ]}
+              ref={""}
+              style={{ width: "100%" }}
+            />
           </Form.Item>
           <Form.Item style={{ display: "flex", justifyContent: "center" }}>
             <Button type="primary" htmlType="submit">

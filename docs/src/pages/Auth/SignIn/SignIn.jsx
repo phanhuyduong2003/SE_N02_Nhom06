@@ -1,13 +1,25 @@
 import React, { useState } from "react";
-import { Button, Checkbox, Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Container, FormReset, SignInForm } from "./SignInStyle";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import unorm from "unorm";
 import { useForm } from "antd/es/form/Form";
+import { child, get, getDatabase, ref } from "firebase/database";
+import { database } from "../../../firebase";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function SignIn() {
+  // get(child(dbRef, `users`)).then(snapshot => {
+  //   if (snapshot.exists()) {
+  //     console.log(snapshot.val());
+  //   } else {
+  //     console.log('No data');
+  //   }
+  // }).catch(error => {
+  //   console.error(error);
+  // })
   const check = localStorage.getItem("isLoggedIn") === "true";
   const [visible, setVisible] = useState(false);
   const [form] = useForm();
@@ -57,30 +69,65 @@ export default function SignIn() {
     }
   };
   if (!check) {
-    const onFinish = (values) => {
-      if (
-        formData &&
-        values.username === formData.username &&
-        values.password === formData.password
-      ) {
-        localStorage.setItem("isLoggedIn", true);
-        Swal.fire({
-          title: "Login Successfully!",
-          text: "Wish you have a great experience",
-          icon: "success",
-          confirmButtonColor: "#1677ff",
-          timer: 5000,
-        });
-        navigate("/");
-      } else {
-        // setError("Invalid username or password");
-        Swal.fire({
-          title: "Invalid username or password",
-          text: "Please try again",
-          icon: "error",
-          confirmButtonColor: "#1677ff",
-        });
+    const onFinish = async (values) => {
+      try {
+        // const dbRef = ref(getDatabase())
+        const auth = getAuth();
+        await signInWithEmailAndPassword(auth, values.email, values.password).then(
+          () => {
+            Swal.fire({
+              title: "Login Successfully!",
+              text: "Wish you have a great experience",
+              icon: "success",
+              confirmButtonColor: "#1677ff",
+              timer: 5000,
+            });
+            localStorage.setItem("isLoggedIn", true);
+            navigate("/");
+          }
+        )
+      } catch (error) {
+        // console.log(error);
+        // if (error.message === "auth/wrong-password") {
+          Swal.fire({
+            title: "Invalid username or password",
+            text: "Please try again",
+            icon: "error",
+            confirmButtonColor: "#1677ff",
+          });
+        // } else {
+        //     Swal.fire({
+        //       title: 'There was an error',
+        //       text: 'Please contact to supporter',
+        //       icon: 'error',
+        //       confirmButtonColor: '#1677ff',
+        //       timer: 3000
+        //     })
+        // }
       }
+      // if (
+      //   formData &&
+      //   values.username === formData.username &&
+      //   values.password === formData.password
+      // ) {
+      //   localStorage.setItem("isLoggedIn", true);
+      //   Swal.fire({
+      //     title: "Login Successfully!",
+      //     text: "Wish you have a great experience",
+      //     icon: "success",
+      //     confirmButtonColor: "#1677ff",
+      //     timer: 5000,
+      //   });
+      //   navigate("/");
+      // } else {
+      //   // setError("Invalid username or password");
+      //   Swal.fire({
+      //     title: "Invalid username or password",
+      //     text: "Please try again",
+      //     icon: "error",
+      //     confirmButtonColor: "#1677ff",
+      //   });
+      // }
     };
 
     return (
@@ -88,7 +135,7 @@ export default function SignIn() {
         <SignInForm>
           <h1
             className="header"
-            style={{ textAlign: "center", paddingBottom: 10, color: '#1677ff' }}
+            style={{ textAlign: "center", paddingBottom: 10, color: "#1677ff" }}
           >
             Sign In
           </h1>
@@ -101,17 +148,17 @@ export default function SignIn() {
             onFinish={onFinish}
           >
             <Form.Item
-              name="username"
+              name="email"
               rules={[
                 {
                   required: true,
-                  message: "Please enter your username",
+                  message: "Please enter your email",
                 },
               ]}
             >
               <Input
                 prefix={<UserOutlined className="site-form-item-icon" />}
-                placeholder="Enter your username"
+                placeholder="Enter your email"
                 onInput={normalizeInput}
               />
             </Form.Item>
@@ -194,9 +241,7 @@ export default function SignIn() {
                 },
               ]}
             >
-              <Input.Password
-                placeholder="Enter your new password"
-              />
+              <Input.Password placeholder="Enter your new password" />
             </Form.Item>
             <Form.Item>
               <Button onClick={handleCancel}>Cancel</Button>
@@ -211,10 +256,10 @@ export default function SignIn() {
   } else {
     setTimeout(() => {
       navigate("/");
-    }, 3000);
+    }, 1000);
     Swal.fire({
-      title: "You are logged in",
-      text: "You cannot access this page unless you are logged out",
+      title: "Bạn chưa đăng nhập",
+      text: "Bạn không thể truy cập trang này khi đã đăng nhập",
       icon: "warning",
       confirmButtonColor: "#1677ff",
       timer: 3000,

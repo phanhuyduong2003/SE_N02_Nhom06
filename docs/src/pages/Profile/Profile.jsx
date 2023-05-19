@@ -1,31 +1,56 @@
 import { Button, Form, Input } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormItem } from "./ProfileStyle";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
+import { getAuth } from "firebase/auth";
+import { get, getDatabase, onValue, ref, set } from "firebase/database";
+import { auth } from "../../firebase";
 
 export default function Profile() {
   const [oldPassword, setOldPassword] = useState("");
   const navigate = useNavigate();
-  const check = localStorage.getItem("isLoggedIn") === 'true';
+  const check = localStorage.getItem("isLoggedIn") === "true";
   const data = JSON.parse(localStorage.getItem("formData"));
-  const username = data.username;
-  const email = data.email;
-  const phonenumber = data.phonenumber;
+  const [name, setName] = useState("");
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  useEffect(() => {
+    const auth = getAuth();
+    const database = getDatabase();
+    const userID = auth.currentUser?.uid;
+    if (!userID) {
+      redirect("/");
+    } else {
+      const userRef = ref(database, `/users/${userID}`);
+      get(userRef).then((snapshot) => {
+        const userData = snapshot.val();
+        if (userData) {
+          setName(userData.fullname);
+          setUserName(userData.username);
+          setEmail(userData.email);
+          setPhoneNumber(userData.phonenumber);
+        } else {
+          Swal.fire({});
+        }
+      });
+    }
+  }, []);
   if (!check) {
     setTimeout(() => {
-      
-      navigate("/");
-    }, 3000)
+      navigate('/')
+    }, 1000)
     Swal.fire({
-      title: 'You are not logged in',
-      text: 'Please loggin to access this page',
-      icon: 'warning',
+      title: "Bạn chưa đăng nhập",
+      text: "Vui lòng đăng nhập để truy cập trang này",
+      icon: "warning",
       showConfirmButton: false,
-      confirmButtonColor: '#1677ff',
-      timer: 3000
-   })
-  }else {
+      confirmButtonColor: "#1677ff",
+      timer: 3000,
+    });
+  } else {
     const handleUpdate = (values) => {
       if (oldPassword === data.password) {
         localStorage.setItem(
@@ -54,14 +79,17 @@ export default function Profile() {
       >
         <h3 style={{ textAlign: "center", color: "#1677ff" }}>My Profile</h3>
         <Form onFinish={handleUpdate}>
-          <FormItem label="Username" labelAlign="left">
-            <Input disabled={true} value={username} style={{ width: 220 }} />
+          <FormItem label="Full name" labelAlign="left">
+            <Input disabled={true} value={name} style={{ width: 220 }} />
+          </FormItem>
+          <FormItem label="User name" labelAlign="left">
+            <Input disabled={true} value={userName} style={{ width: 220 }} />
           </FormItem>
           <FormItem label="Email" labelAlign="left">
             <Input disabled={true} value={email} style={{ width: 220 }} />
           </FormItem>
           <FormItem label="Phone number" labelAlign="left">
-            <Input disabled={true} value={phonenumber} style={{ width: 220 }} />
+            <Input disabled={true} value={phoneNumber} style={{ width: 220 }} />
           </FormItem>
           <FormItem
             label="Old password"

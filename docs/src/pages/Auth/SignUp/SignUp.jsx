@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import { Container, SignUpForm } from "./SignUpStyle";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -11,6 +11,9 @@ import {
 } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import unorm from "unorm";
+import { child, getDatabase, ref, set } from "firebase/database";
+// import { auth, database } from "../../../firebase";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -20,33 +23,53 @@ export default function SignUp() {
     event.target.value = normalizedValue;
   };
   const check = localStorage.getItem("isLoggedIn") === "true";
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     // const { cofirm_password, ...formData } = values;
-    localStorage.setItem(
-      "formData",
-      JSON.stringify({
-        email: values.email,
+    try {
+      const dbRef = ref(getDatabase());
+      const auth = getAuth()
+      await createUserWithEmailAndPassword(auth, values.email, values.password)
+      const currentUser = auth.currentUser
+      const userData = {
+        id: currentUser.uid,
+        fullname: values.fullname,
         phonenumber: values.phonenumber,
+        email: values.email,
         username: values.username,
-        password: values.password,
+      };
+      await set(child(dbRef, `users/${currentUser.uid}`), userData);
+      // localStorage.setItem(
+      //   "formData",
+      //   JSON.stringify({
+      //     email: values.email,
+      //     phonenumber: values.phonenumber,
+      //     username: values.username,
+      //     password: values.password,
+      //   })
+      // );
+      Swal.fire({
+        title: "Register Successfully!",
+        text: "Welcome to Find Car Parking",
+        icon: "success",
+        confirmButtonColor: "#1677ff",
+        timer: 5000,
+      });
+      navigate("/signin");
+    } catch (error) {
+      Swal.fire({
+        title: 'Error',
+        text: error.message
       })
-    );
-    Swal.fire({
-      title: "Register Successfully!",
-      text: "Welcome to Find Car Parking",
-      icon: "success",
-      confirmButtonColor: "#1677ff",
-      timer: 5000,
-    });
-    navigate("/signin");
+      // console.log(error);
+    }
   };
   if (check) {
     setTimeout(() => {
       navigate("/");
-    }, 3000);
+    }, 1000);
     Swal.fire({
-      title: "You are logged in",
-      text: "You cannot access this page unless you are logged out",
+      title: "Bạn đã đăng nhập",
+      text: "Bạn không thể truy cập trang này khi đã đăng nhập",
       icon: "warning",
       confirmButtonColor: "#1677ff",
       timer: 3000,
@@ -58,7 +81,7 @@ export default function SignUp() {
       <SignUpForm>
         <h1
           className="header"
-          style={{ textAlign: "center", paddingBottom: 10, color: '#1677ff' }}
+          style={{ textAlign: "center", paddingBottom: 10, color: "#1677ff" }}
         >
           Sign Up
         </h1>
