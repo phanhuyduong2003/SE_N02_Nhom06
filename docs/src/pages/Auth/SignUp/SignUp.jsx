@@ -38,18 +38,9 @@ export default function SignUp() {
         username: values.username,
       };
       await set(child(dbRef, `users/${currentUser.uid}`), userData);
-      // localStorage.setItem(
-      //   "formData",
-      //   JSON.stringify({
-      //     email: values.email,
-      //     phonenumber: values.phonenumber,
-      //     username: values.username,
-      //     password: values.password,
-      //   })
-      // );
       Swal.fire({
-        title: "Register Successfully!",
-        text: "Welcome to Find Car Parking",
+        title: "Đăng kí thành công",
+        text: "Chào mừng đến hệ thống",
         icon: "success",
         confirmButtonColor: "#1677ff",
         timer: 5000,
@@ -99,7 +90,7 @@ export default function SignUp() {
             rules={[
               {
                 required: true,
-                message: "Please enter your fullname",
+                message: "Vui lòng nhập họ tên",
               },
             ]}
             style={{ display: "flex", flexDirection: "column" }}
@@ -114,15 +105,15 @@ export default function SignUp() {
             rules={[
               {
                 required: true,
-                message: "Please enter your phone number",
+                message: "Vui lòng nhập số điện thoại",
               },
               {
                 pattern: /^[0-9]{10}$/,
-                message: "Please enter a valid phone number with 10 digits.",
+                message: "Vui lòng nhập số điện thoại có độ dài là 10 kí tự số",
               },
               {
                 pattern: /^\S+$/,
-                message: "Phone number cannot contain whitespace",
+                message: "Số điện thoại không được chứa khoảng trống",
               },
             ]}
             style={{ display: "flex", flexDirection: "column" }}
@@ -141,11 +132,11 @@ export default function SignUp() {
               },
               {
                 pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                message: "Please enter valid email address",
+                message: "Vui lòng nhập email hợp lệ",
               },
               {
                 pattern: /^\S+$/,
-                message: "Email cannot contain whitespace",
+                message: "Email không được chứa khoảng trắng",
               },
             ]}
           >
@@ -156,11 +147,11 @@ export default function SignUp() {
             rules={[
               {
                 required: true,
-                message: "Please enter your username",
+                message: "Vui lòng nhập tên người dùng",
               },
               {
                 pattern: /^\S+$/,
-                message: "Username cannot contain whitespace",
+                message: "Tên người dùng không được chứa khoảng trắng",
               },
             ]}
           >
@@ -175,12 +166,16 @@ export default function SignUp() {
             rules={[
               {
                 required: true,
-                message: "Please enter your password",
+                message: "Vui lòng nhập mật khẩu",
               },
               {
                 pattern: /^\S+$/,
-                message: "Password cannot contain whitespace",
+                message: "Mật khẩu không được chứa khoảng trắng",
               },
+              {
+                min: 6,
+                message: 'Mật khẩu phải chứa ít nhất 6 kí tự'
+              }
             ]}
           >
             <Input.Password
@@ -199,11 +194,11 @@ export default function SignUp() {
             rules={[
               {
                 required: true,
-                message: "Please enter your confirm password",
+                message: "Vui lòng nhập mật khẩu xác nhận",
               },
               {
                 pattern: /^\S+$/,
-                message: "Password cannot contain whitespace",
+                message: "Mật khẩu xác nhận không được chứa khoảng trắng",
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
@@ -212,7 +207,7 @@ export default function SignUp() {
                   }
                   return Promise.reject(
                     new Error(
-                      "The passwords that you entered do not match the new password"
+                      "Mật khẩu xác nhận không trùng với mật khẩu đã đặt"
                     )
                   );
                 },

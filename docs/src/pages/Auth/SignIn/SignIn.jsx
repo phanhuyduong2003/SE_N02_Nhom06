@@ -8,7 +8,7 @@ import unorm from "unorm";
 import { useForm } from "antd/es/form/Form";
 import { child, get, getDatabase, ref } from "firebase/database";
 import { database } from "../../../firebase";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function SignIn() {
   // get(child(dbRef, `users`)).then(snapshot => {
@@ -30,43 +30,12 @@ export default function SignIn() {
     const normalizedValue = unorm.nfd(value).replace(/[\u0300-\u036f]/g, "");
     event.target.value = normalizedValue;
   };
-  const formData = JSON.parse(localStorage.getItem("formData"));
   const handleForgotPassword = () => {
     setVisible(true);
   };
   const handleCancel = () => {
     form.resetFields();
     setVisible(false);
-  };
-  const handleConfirm = (values) => {
-    if (
-      formData &&
-      values.email === formData.email &&
-      values.phonenumber === formData.phonenumber &&
-      values.username === formData.username
-    ) {
-      localStorage.setItem(
-        "formData",
-        JSON.stringify({ ...formData, password: values.newpassword })
-      );
-      Swal.fire({
-        title: "Password Reset Successfully",
-        text: "Now you can login with new password",
-        icon: "success",
-        confirmButtonColor: "#1677ff",
-        timer: 3000,
-      });
-      form.resetFields();
-      setVisible(false);
-    } else {
-      Swal.fire({
-        title: "Your email/phone number/username is incorrect",
-        text: "Please try again",
-        icon: "error",
-        confirmButtonColor: "#1677ff",
-        timer: 3000,
-      });
-    }
   };
   if (!check) {
     const onFinish = async (values) => {
@@ -76,8 +45,8 @@ export default function SignIn() {
         await signInWithEmailAndPassword(auth, values.email, values.password).then(
           () => {
             Swal.fire({
-              title: "Login Successfully!",
-              text: "Wish you have a great experience",
+              title: "Đăng nhập thành công",
+              text: "Chúc bạn có trải nghiệm tuyệt vời",
               icon: "success",
               confirmButtonColor: "#1677ff",
               timer: 5000,
@@ -90,45 +59,17 @@ export default function SignIn() {
         // console.log(error);
         // if (error.message === "auth/wrong-password") {
           Swal.fire({
-            title: "Invalid username or password",
-            text: "Please try again",
+            title: "Email hoặc mật khẩu không hợp lệ",
+            text: "Vui lòng thử lại",
             icon: "error",
             confirmButtonColor: "#1677ff",
           });
-        // } else {
-        //     Swal.fire({
-        //       title: 'There was an error',
-        //       text: 'Please contact to supporter',
-        //       icon: 'error',
-        //       confirmButtonColor: '#1677ff',
-        //       timer: 3000
-        //     })
-        // }
       }
-      // if (
-      //   formData &&
-      //   values.username === formData.username &&
-      //   values.password === formData.password
-      // ) {
-      //   localStorage.setItem("isLoggedIn", true);
-      //   Swal.fire({
-      //     title: "Login Successfully!",
-      //     text: "Wish you have a great experience",
-      //     icon: "success",
-      //     confirmButtonColor: "#1677ff",
-      //     timer: 5000,
-      //   });
-      //   navigate("/");
-      // } else {
-      //   // setError("Invalid username or password");
-      //   Swal.fire({
-      //     title: "Invalid username or password",
-      //     text: "Please try again",
-      //     icon: "error",
-      //     confirmButtonColor: "#1677ff",
-      //   });
-      // }
     };
+    const handleConfirm = async (values) => {
+      const auth = getAuth()
+      await sendPasswordResetEmail(auth, values.email)
+    }
 
     return (
       <Container>
@@ -152,7 +93,7 @@ export default function SignIn() {
               rules={[
                 {
                   required: true,
-                  message: "Please enter your email",
+                  message: "Vui lòng nhập email",
                 },
               ]}
             >
@@ -167,7 +108,7 @@ export default function SignIn() {
               rules={[
                 {
                   required: true,
-                  message: "Please enter your password",
+                  message: "Vui lòng nhập mật khẩu",
                 },
               ]}
             >
@@ -203,48 +144,52 @@ export default function SignIn() {
           </Form>
         </SignInForm>
         <Modal
-          title="Forgot Password"
+          title="Đặt lại mật khẩu"
           open={visible}
           footer={[]}
           closable={false}
         >
-          <FormReset onFinish={handleConfirm} form={form}>
+          <FormReset onFinish={handleConfirm}  form={form}>
             <Form.Item
               name="email"
-              rules={[{ required: true, message: "Please enter you email" }]}
+              rules={[{ required: true, message: "Vui lòng nhập email" }]}
             >
-              <Input placeholder="Enter your email" />
+              <Input placeholder="Nhập email" />
             </Form.Item>
-            <Form.Item
+            {/* <Form.Item
               name="phonenumber"
               rules={[
-                { required: true, message: "Please enter your phone number" },
+                { required: true, message: "Vui lòng nhập số điện thoại" },
               ]}
             >
-              <Input placeholder="Enter your phone number" />
+              <Input placeholder="Nhập số điện thoại" />
             </Form.Item>
             <Form.Item
               name="username"
               rules={[
-                { required: true, message: "Please enter your username" },
+                { required: true, message: "Vui lòng nhập tên người dùng" },
               ]}
             >
-              <Input placeholder="Enter your username" />
+              <Input placeholder="Nhập tên người dùng" />
             </Form.Item>
             <Form.Item
               name="newpassword"
               rules={[
-                { required: true, message: "Please enter your new password" },
+                { required: true, message: "Vui lòng nhập mật khẩu mới" },
                 {
                   pattern: /^\S+$/,
-                  message: "Password cannot contain whitespace",
+                  message: "Mật khẩu mới không được chứa khoảng trắng",
                 },
+                {
+                  min: 6,
+                  message: 'Mật khẩu phải có độ dài ít nhất 6 kí tự'
+                }
               ]}
             >
-              <Input.Password placeholder="Enter your new password" />
-            </Form.Item>
+              <Input.Password placeholder="Nhập mật khẩu mới" />
+            </Form.Item> */}
             <Form.Item>
-              <Button onClick={handleCancel}>Cancel</Button>
+              <Button onClick={handleCancel}>Huỷ</Button>
               <Button type="primary" htmlType="submit">
                 OK
               </Button>

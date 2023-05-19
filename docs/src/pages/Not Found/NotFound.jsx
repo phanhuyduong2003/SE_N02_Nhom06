@@ -10,6 +10,7 @@ export default function NotFound() {
         justifyContent: "space-around",
         alignItems: "center",
         flexDirection: "column",
+        maxHeight: '100vh'
       }}
     >
       <div
@@ -25,11 +26,11 @@ export default function NotFound() {
           alt=""
           style={{ height: 400 }}
         />
-        <h1 style={{ color: "#1677ff" }}>Oops!</h1>
-        <span>Sorry, the page you're looking for doesn't exist</span>
+        <h1 style={{ color: "#1677ff" }}>Ôi hỏng!</h1>
+        <span>Trang bạn đang cố truy cập không tồn tại</span>
       </div>
       <Link to="/">
-        <Button type="primary">GO TO HOMEPAGE</Button>
+        <Button type="primary">TRỞ VỀ TRANG CHỦ</Button>
       </Link>
     </div>
   );

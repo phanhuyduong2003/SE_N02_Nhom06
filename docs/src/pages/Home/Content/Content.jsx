@@ -62,7 +62,7 @@ export default function Content() {
           position: "absolute",
           backgroundColor: "rgb(255, 255, 255)",
           transform: "translate(-50%, -50%)",
-          left: "30%",
+          left: "25%",
           top: "50%",
           padding: 20,
           borderRadius: 6,
@@ -150,8 +150,8 @@ export default function Content() {
           </Form.Item>
         </Form>
       </div>
-      <H11>Nhanh chóng</H11>
-      <H12
+      <H11 className="fast">Nhanh chóng</H11>
+      <H12 className="convenient"
       >
         Thuận tiện
       </H12>

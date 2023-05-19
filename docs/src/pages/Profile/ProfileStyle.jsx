@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const FormItem = styled(Form.Item)`
     .ant-form-item-label {
-        width: 150px;
+        width: 170px;
         text-align: right;
     }
 `

@@ -26,7 +26,7 @@ export const H12 = styled.h1`
           position: absolute;
           background-color: #ffffffc8;
           color: #1677ff;
-          left: 60%;
+          left: 70%;
           top: 60%;
           padding: 20px;
           border-radius: 10;

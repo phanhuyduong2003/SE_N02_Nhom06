@@ -3,52 +3,60 @@ import React, { useEffect, useState } from "react";
 import { FormItem } from "./ProfileStyle";
 import Swal from "sweetalert2";
 import { redirect, useNavigate } from "react-router-dom";
-import { EmailAuthProvider, getAuth, reauthenticateWithCredential, updatePassword } from "firebase/auth";
+import {
+  EmailAuthProvider,
+  getAuth,
+  reauthenticateWithCredential,
+  updatePassword,
+} from "firebase/auth";
 import { get, getDatabase, onValue, ref, set } from "firebase/database";
-import { auth } from "../../firebase";
+import { signInWithCredential } from "firebase/auth";
+import { useForm } from "antd/es/form/Form";
 
 export default function Profile() {
   const [oldPassword, setOldPassword] = useState("");
   const navigate = useNavigate();
   const check = localStorage.getItem("isLoggedIn") === "true";
-  const data = JSON.parse(localStorage.getItem("formData"));
   const [name, setName] = useState("");
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [form] = useForm()
 
   useEffect(() => {
     const auth = getAuth();
     const database = getDatabase();
-    const userID = auth.currentUser.uid;
+    const userID = auth.currentUser?.uid;
     if (!userID) {
-      redirect("/");
+      setTimeout(() => {
+        navigate('/')
+      })
     } else {
       const userRef = ref(database, `/users/${userID}`);
-      onValue(userRef, snapshot => {
-        const userData = snapshot.val()
-        console.log(userData);
+      onValue(userRef, (snapshot) => {
+        const userData = snapshot.val();
+        // console.log(userData);
         if (userData) {
-          setName(userData.fullname)
-          setEmail(userData.email)
-          setPhoneNumber(userData.phonenumber)
-          setUserName(userData.username)
-      } else {
+          setName(userData.fullname);
+          setEmail(userData.email);
+          setPhoneNumber(userData.phonenumber);
+          setUserName(userData.username);
+        } else {
           Swal.fire({
-            title: 'Có lỗi xảy ra',
-            text: 'Vui lòng liên hệ với bộ phận hỗ trợ',
-            icon: 'warning',
+            title: "Có lỗi xảy ra",
+            text: "Vui lòng liên hệ với bộ phận hỗ trợ",
+            icon: "warning",
             timer: 3000,
-            confirmButtonColor: '#1677ff'
-        });
-      }
-    });
-  }
-  }, []);
+            confirmButtonColor: "#1677ff",
+          });
+        }
+      });
+    }
+  }, [navigate]);
   if (!check) {
     setTimeout(() => {
-      navigate('/')
-    }, 1000)
+      navigate("/");
+    }, 1000);
     Swal.fire({
       title: "Bạn chưa đăng nhập",
       text: "Vui lòng đăng nhập để truy cập trang này",
@@ -60,36 +68,41 @@ export default function Profile() {
   } else {
     const handleUpdate = async (values) => {
       try {
-        const user = auth.currentUser;
-        const credential = EmailAuthProvider.credential(user.email, oldPassword)
-        await reauthenticateWithCredential(user, credential)
-        await updatePassword(user, values.oldpassword)
+        const auth = getAuth();
+        const user = auth.currentUser
+        const credential = EmailAuthProvider.credential(email, oldPassword)
+        await signInWithCredential(auth, credential)
+        const token = await user.getIdTokenResult()
+        await updatePassword(user, values.password)
+        localStorage.setItem('userToken', token.token)
+        // await localStorage.setItem('isLoggedIn', false)
+        await form.resetFields()
+        // await signInWithCredential(auth, credential)
         Swal.fire({
-          title: 'Cập nhật mật khẩu thành công',
-          text: 'Vui lòng ghi nhớ mật khẩu mới để truy cập',
-          icon: 'success',
-          confirmButtonColor: '#1677ff'
-        })
+          title: "Cập nhật mật khẩu thành công",
+          text: "Vui lòng ghi nhớ mật khẩu mới để truy cập",
+          icon: "success",
+          confirmButtonColor: "#1677ff",
+        });
       } catch (error) {
-        Swal.fire({
-          title: error.message,
-          icon: 'error',
-          confirmButtonColor: '#1677ff'
-        })
+        if (error.message === "Firebase: Error (auth/wrong-password).") {
+          Swal.fire({
+            title: 'Mật khẩu hiện tại không đúng',
+            text: 'Vui lòng thử lại',
+            icon: "error",
+            confirmButtonColor: "#1677ff",
+          });
+        } else {
+          
+          Swal.fire({
+            title: 'Có lỗi nào đó xảy ra',
+            text: 'Vui lòng liên hệ với bộ phận hỗ trợ',
+            confirmButtonColor: '#1677ff',
+            timer: 3000
+          })
+          console.log(error.message);
+        }
       }
-      // if (oldPassword === data.password) {
-      //   localStorage.setItem(
-      //     "formData",
-      //     JSON.stringify({ ...data, password: values.password })
-      //   );
-      // } else {
-      //   Swal.fire({
-      //     title: "Old password is incorrect",
-      //     text: "Please try again",
-      //     icon: "error",
-      //     confirmButtonColor: "#1677ff",
-      //   });
-      // }
     };
     return (
       <div
@@ -101,85 +114,87 @@ export default function Profile() {
           padding: "0 90px",
         }}
       >
-        <h3 style={{ textAlign: "center", color: "#1677ff" }}>My Profile</h3>
-        <Form onFinish={handleUpdate}>
-          <FormItem label="Full name" labelAlign="left">
+        <h3 style={{ textAlign: "center", color: "#1677ff" }}>Tài khoản của tôi</h3>
+        <Form onFinish={handleUpdate} form={form}>
+          <FormItem label="Họ tên" labelAlign="left">
             <Input disabled={true} value={name} style={{ width: 220 }} />
           </FormItem>
-          <FormItem label="User name" labelAlign="left">
+          <FormItem label="Tên người dùng" labelAlign="left">
             <Input disabled={true} value={userName} style={{ width: 220 }} />
           </FormItem>
           <FormItem label="Email" labelAlign="left">
-            <Input disabled={true} value={email} style={{ width: 220 }} />
+            <Input disabled={true} value={email} style={{ width: 220 }} className="email_change"/>
           </FormItem>
-          <FormItem label="Phone number" labelAlign="left">
+          <FormItem label="Số điện thoại" labelAlign="left">
             <Input disabled={true} value={phoneNumber} style={{ width: 220 }} />
           </FormItem>
           <FormItem
-            label="Old password"
+            label="Mật khẩu cũ"
             name="oldpassword"
             labelAlign="left"
             rules={[
               {
-                message: "Please enter your password!",
+                message: "Vui lòng nhập mật khẩu cũ",
                 required: true,
               },
               {
                 pattern: /^\S+$/,
-                message: "Password cannot contain whitespace",
+                message: "Mật khẩu cũ không được chứa khoảng trắng",
               },
             ]}
           >
             <Input.Password
-              placeholder="Enter your old password"
+              placeholder="Nhập mật khẩu cũ"
               onChange={(event) => setOldPassword(event.target.value)}
               style={{ width: 220 }}
             />
           </FormItem>
           <FormItem
-            label="Password"
+            label="Mật khẩu mới"
             name="password"
             labelAlign="left"
             rules={[
               {
-                message: "Please enter your password!",
+                message: "Vui lòng nhập mật khẩu mới",
                 required: true,
               },
               {
                 pattern: /^\S+$/,
-                message: "Password cannot contain whitespace",
+                message: "Mật khẩu không được chứa khoảng trắng",
+              },
+              {
+                min: 6,
+                message: "Mật khẩu phải chứa ít nhất 6 kí tự",
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || getFieldValue("old-password") !== value) {
+                  if (!value || getFieldValue("oldpassword") !== value) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error(
-                      "New password cannot be the same as your old password"
-                    )
+                    new Error("Mật khẩu mới không được trùng mật khẩu cũ")
                   );
                 },
               }),
             ]}
           >
             <Input.Password
-              placeholder="Enter your password"
+              placeholder="Nhập mật khẩu mới"
               style={{ width: 220 }}
             />
           </FormItem>
           <FormItem
-            label="Confirm pasword"
+            label="Xác nhận mật khẩu mới"
             name="confirm_password"
             labelAlign="left"
             rules={[
               {
-                message: "Please enter your confirm password!",
+                message: "Vui lòng nhập mật khẩu xác nhận",
                 required: true,
               },
               {
                 pattern: /^\S+$/,
-                message: "Password cannot contain whitespace",
+                message: "Mật khẩu xác nhận không được chứa khoảng trắng",
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
@@ -188,7 +203,7 @@ export default function Profile() {
                   }
                   return Promise.reject(
                     new Error(
-                      "The passwords that you entered do not match the new password"
+                      "Mật khẩu xác nhận không trùng với mật khẩu đã đặt"
                     )
                   );
                 },
@@ -196,14 +211,14 @@ export default function Profile() {
             ]}
           >
             <Input.Password
-              placeholder="Enter your confirm password"
+              placeholder="Nhập mật khẩu xác nhận"
               style={{ width: 220 }}
             />
           </FormItem>
           {/* {error && <div style={{color: 'red', textAlign: 'center'}}>{error} </div>} */}
           <FormItem style={{ textAlign: "center" }}>
             <Button type="primary" htmlType="submit">
-              Update
+              Cập nhật
             </Button>
           </FormItem>
         </Form>
