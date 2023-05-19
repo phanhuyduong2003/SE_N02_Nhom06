@@ -10,6 +10,7 @@ import {
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { H11, H12 } from "./ContentStyle";
+import { useForm } from "antd/es/form/Form";
 const { RangePicker } = DatePicker;
 
 export default function Content() {
@@ -33,6 +34,7 @@ export default function Content() {
         Swal.fire({
           title: "Đặt chỗ thành công",
           text: "Bạn có thể kiểm tra thông tin tại trang Quản lý đặt chỗ",
+          icon: 'success',
           confirmButtonColor: "#1677ff",
           timer: 2000,
         });
