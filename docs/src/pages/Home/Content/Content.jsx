@@ -126,8 +126,8 @@ export default function Content() {
             name="car-parking"
           >
             <Select placeholder="Chọn bãi đỗ xe">
-              <Select.Option value="Phenikaa University">
-                Trường Đại học Phenikaa
+              <Select.Option value="Chung cư Park City">
+                Chung cư Park City
               </Select.Option>
               <Select.Option value="Duong Noi Apartment Building">
                 Chung cư Dương Nội

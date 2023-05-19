@@ -63,8 +63,8 @@ export default function Reservation() {
                     alt=""
                     style={{ width: "300px", objectFit: "cover" }}
                   />
-                  <p>Họ tên: {reservation.name}</p>
                   <p>Biển số xe: {reservation.license}</p>
+                  <p>Bãi đỗ xe: { reservation.parking}</p>
                 </Card>
               </>
             );
