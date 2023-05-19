@@ -8,16 +8,27 @@ import Profile from "./pages/Profile/Profile";
 import About from "./pages/About/About";
 import NotFound from "./pages/Not Found/NotFound";
 import Reservation from "./pages/Reservation/Reservation";
+import Footer from "./pages/Home/Footer/Footer";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          minHeight: "100vh",
+        }}
+      >
         <Header />
-        <Outlet />
-        {/* <Footer /> */}
-      </>
+
+        <div style={{ flexGrow: 1 }}>
+          <Outlet />
+        </div>
+        <Footer />
+      </div>
     ),
     children: [
       {
@@ -25,30 +36,30 @@ const router = createBrowserRouter([
         element: <Content />,
       },
       {
-        path: '/profile',
-        element: <Profile/>
+        path: "/profile",
+        element: <Profile />,
       },
       {
-        path: '/reservation',
-        element: <Reservation/>
+        path: "/reservation",
+        element: <Reservation />,
       },
       {
-        path: '/about',
-        element: <About/>
-      }
+        path: "/about",
+        element: <About />,
+      },
     ],
   },
   {
     path: "/signin",
-    element: <SignIn/>,
+    element: <SignIn />,
   },
   {
     path: "/signup",
     element: <SignUp />,
   },
   {
-    path: '*',
-    element: <NotFound/>
-  }
+    path: "*",
+    element: <NotFound />,
+  },
 ]);
 export default router;

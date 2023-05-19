@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FormItem } from "./ProfileStyle";
 import Swal from "sweetalert2";
 import { redirect, useNavigate } from "react-router-dom";
-import { getAuth } from "firebase/auth";
+import { EmailAuthProvider, getAuth, reauthenticateWithCredential, updatePassword } from "firebase/auth";
 import { get, getDatabase, onValue, ref, set } from "firebase/database";
 import { auth } from "../../firebase";
 
@@ -20,23 +20,30 @@ export default function Profile() {
   useEffect(() => {
     const auth = getAuth();
     const database = getDatabase();
-    const userID = auth.currentUser?.uid;
+    const userID = auth.currentUser.uid;
     if (!userID) {
       redirect("/");
     } else {
       const userRef = ref(database, `/users/${userID}`);
-      get(userRef).then((snapshot) => {
-        const userData = snapshot.val();
+      onValue(userRef, snapshot => {
+        const userData = snapshot.val()
+        console.log(userData);
         if (userData) {
-          setName(userData.fullname);
-          setUserName(userData.username);
-          setEmail(userData.email);
-          setPhoneNumber(userData.phonenumber);
-        } else {
-          Swal.fire({});
-        }
-      });
-    }
+          setName(userData.fullname)
+          setEmail(userData.email)
+          setPhoneNumber(userData.phonenumber)
+          setUserName(userData.username)
+      } else {
+          Swal.fire({
+            title: 'Có lỗi xảy ra',
+            text: 'Vui lòng liên hệ với bộ phận hỗ trợ',
+            icon: 'warning',
+            timer: 3000,
+            confirmButtonColor: '#1677ff'
+        });
+      }
+    });
+  }
   }, []);
   if (!check) {
     setTimeout(() => {
@@ -51,21 +58,38 @@ export default function Profile() {
       timer: 3000,
     });
   } else {
-    const handleUpdate = (values) => {
-      if (oldPassword === data.password) {
-        localStorage.setItem(
-          "formData",
-          JSON.stringify({ ...data, password: values.password })
-        );
-      } else {
-        // setError('Old password is incorrect')
+    const handleUpdate = async (values) => {
+      try {
+        const user = auth.currentUser;
+        const credential = EmailAuthProvider.credential(user.email, oldPassword)
+        await reauthenticateWithCredential(user, credential)
+        await updatePassword(user, values.oldpassword)
         Swal.fire({
-          title: "Old password is incorrect",
-          text: "Please try again",
-          icon: "error",
-          confirmButtonColor: "#1677ff",
-        });
+          title: 'Cập nhật mật khẩu thành công',
+          text: 'Vui lòng ghi nhớ mật khẩu mới để truy cập',
+          icon: 'success',
+          confirmButtonColor: '#1677ff'
+        })
+      } catch (error) {
+        Swal.fire({
+          title: error.message,
+          icon: 'error',
+          confirmButtonColor: '#1677ff'
+        })
       }
+      // if (oldPassword === data.password) {
+      //   localStorage.setItem(
+      //     "formData",
+      //     JSON.stringify({ ...data, password: values.password })
+      //   );
+      // } else {
+      //   Swal.fire({
+      //     title: "Old password is incorrect",
+      //     text: "Please try again",
+      //     icon: "error",
+      //     confirmButtonColor: "#1677ff",
+      //   });
+      // }
     };
     return (
       <div
@@ -93,7 +117,7 @@ export default function Profile() {
           </FormItem>
           <FormItem
             label="Old password"
-            name="old-password"
+            name="oldpassword"
             labelAlign="left"
             rules={[
               {

@@ -137,7 +137,7 @@ export default function SignIn() {
             className="header"
             style={{ textAlign: "center", paddingBottom: 10, color: "#1677ff" }}
           >
-            Sign In
+            Đăng Nhập
           </h1>
           <Form
             name="normal_login"
@@ -158,7 +158,7 @@ export default function SignIn() {
             >
               <Input
                 prefix={<UserOutlined className="site-form-item-icon" />}
-                placeholder="Enter your email"
+                placeholder="Nhập email"
                 onInput={normalizeInput}
               />
             </Form.Item>
@@ -174,13 +174,13 @@ export default function SignIn() {
               <Input.Password
                 prefix={<LockOutlined className="site-form-item-icon" />}
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Nhập mật khẩu"
                 onInput={normalizeInput}
               />
             </Form.Item>
             <Form.Item>
               <Link onClick={() => handleForgotPassword()}>
-                Forgot Password?
+                Quên mật khẩu?
               </Link>
             </Form.Item>
             <Form.Item
@@ -194,11 +194,11 @@ export default function SignIn() {
                 htmlType="submit"
                 className="login-form-button"
               >
-                Log in
+                Đăng nhập
               </Button>
             </Form.Item>
             <Form.Item style={{ display: "flex", justifyContent: "center" }}>
-              <Link to="/signup">Don't have an account? Register</Link>
+              <Link to="/signup">Chưa có tài khoản? Đăng kí</Link>
             </Form.Item>
           </Form>
         </SignInForm>

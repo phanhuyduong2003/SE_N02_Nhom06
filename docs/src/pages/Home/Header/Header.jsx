@@ -67,7 +67,7 @@ export default function Header() {
       children: [
         { label: <Link to='/profile'>Quản lý tài khoản</Link> },
         {
-          label: <Link onClick={handleLogout}>Logout</Link>,
+          label: <Link onClick={handleLogout}>Đăng xuất</Link>,
         },
       ],
     },

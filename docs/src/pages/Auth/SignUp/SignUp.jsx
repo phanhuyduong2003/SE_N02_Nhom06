@@ -83,7 +83,7 @@ export default function SignUp() {
           className="header"
           style={{ textAlign: "center", paddingBottom: 10, color: "#1677ff" }}
         >
-          Sign Up
+          Đăng Kí
         </h1>
         <Form
           name="basic"
@@ -106,7 +106,7 @@ export default function SignUp() {
           >
             <Input
               prefix={<FontSizeOutlined />}
-              placeholder="Enter your fullname"
+              placeholder="Nhập họ tên"
             />
           </Form.Item>
           <Form.Item
@@ -129,7 +129,7 @@ export default function SignUp() {
           >
             <Input
               prefix={<PhoneOutlined />}
-              placeholder="Enter your phone number"
+              placeholder="Nhập số điện thoại"
             />
           </Form.Item>
           <Form.Item
@@ -137,7 +137,7 @@ export default function SignUp() {
             rules={[
               {
                 required: true,
-                message: "Please enter your email",
+                message: "Vui lòng nhập email",
               },
               {
                 pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
@@ -149,7 +149,7 @@ export default function SignUp() {
               },
             ]}
           >
-            <Input prefix={<MailOutlined />} placeholder="Enter your email" />
+            <Input prefix={<MailOutlined />} placeholder="Nhập email" />
           </Form.Item>
           <Form.Item
             name="username"
@@ -166,7 +166,7 @@ export default function SignUp() {
           >
             <Input
               prefix={<UserOutlined />}
-              placeholder="Enter your username"
+              placeholder="Nhập tên người dùng"
             />
           </Form.Item>
 
@@ -185,7 +185,7 @@ export default function SignUp() {
           >
             <Input.Password
               prefix={<LockOutlined />}
-              placeholder="Enter your password"
+              placeholder="Nhập mật khẩu"
               onInput={normalizeInput}
               onKeyPress={(event) => {
                 if (event.key === " ") {
@@ -221,7 +221,7 @@ export default function SignUp() {
           >
             <Input.Password
               prefix={<LockOutlined />}
-              placeholder="Enter your confirm password"
+              placeholder="Xác nhận mật khẩu"
               onInput={normalizeInput}
             />
           </Form.Item>
@@ -237,11 +237,11 @@ export default function SignUp() {
             }}
           >
             <Button type="primary" htmlType="submit">
-              Submit
+              Đăng kí
             </Button>
           </Form.Item>
           <Form.Item style={{ display: "flex", justifyContent: "center" }}>
-            <Link to="/signin">Already have an account? Log In</Link>
+            <Link to="/signin">Đã có tài khoản? Đăng nhập</Link>
           </Form.Item>
         </Form>
       </SignUpForm>

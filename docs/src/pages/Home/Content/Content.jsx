@@ -1,40 +1,45 @@
 import { Button, DatePicker, Form, Input, Select } from "antd";
-import { getAuth } from "firebase/auth";
-import { child, getDatabase, ref, set } from "firebase/database";
-import { addDoc, collection, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getFirestore,
+  setDoc,
+} from "firebase/firestore";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
+import { H11, H12 } from "./ContentStyle";
 const { RangePicker } = DatePicker;
 
 export default function Content() {
-  const check = localStorage.getItem('isLoggedIn') === 'true'
+  const check = localStorage.getItem("isLoggedIn") === "true";
   const handleCheckout = async (data) => {
     if (check) {
-      
       try {
-        const database = getFirestore()
-      const reservation = collection(database, 'reservations')
-      const reservationData = {
-        name: data.name,
-        license: data.license,
-        parking: data["car-parking"],
-        start: data.date[0].format("DD/MM/YYYY HH:mm"),
-        end: data.date[1].format("DD/MM/YYYY HH:mm"),
-      };
-      await addDoc(reservation, reservationData)
-      console.log(reservation);
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
+        const database = getFirestore();
+        const reservation = collection(database, "reservations");
+        const reservationData = {
+          name: data.name,
+          license: data.license,
+          parking: data["car-parking"],
+          start: data.date[0].format("DD/MM/YYYY HH:mm"),
+          end: data.date[1].format("DD/MM/YYYY HH:mm"),
+        };
+        await addDoc(reservation, reservationData);
+        console.log(reservation);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
       Swal.fire({
-        title: 'Bạn chưa đăng nhập',
-        text: 'Vui lòng đăng nhập để đặt chỗ',
+        title: "Bạn chưa đăng nhập",
+        text: "Vui lòng đăng nhập để đặt chỗ",
         timer: 3000,
-        confirmButtonColor: '#1677ff',
-        icon: 'error',
-      })
-  }
+        confirmButtonColor: "#1677ff",
+        icon: "error",
+      });
+    }
   };
   return (
     <div
@@ -44,7 +49,7 @@ export default function Content() {
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
-        height: "100%",
+        minHeight: "90vh",
         padding: "0 90px",
       }}
     >
@@ -55,13 +60,16 @@ export default function Content() {
       <div
         style={{
           position: "absolute",
-          backgroundColor: "rgba(136, 136, 136, 0.793)",
+          backgroundColor: "rgb(255, 255, 255)",
+          transform: "translate(-50%, -50%)",
+          left: "30%",
+          top: "50%",
           padding: 20,
           borderRadius: 6,
           width: 500,
         }}
       >
-        <h1 style={{ color: "#1677ff" }}>Booking Car Space</h1>
+        <h1 style={{ color: "#1677ff" }}>Đặt Chỗ Đỗ Xe</h1>
         <Form
           layout="horizontal"
           initialValues={{
@@ -79,41 +87,41 @@ export default function Content() {
             rules={[
               {
                 required: true,
-                message: "Please enter name",
+                message: "Vui lòng nhập tên",
               },
             ]}
           >
-            <Input placeholder="Enter name" />
+            <Input placeholder="Nhập tên" />
           </Form.Item>
           <Form.Item
             rules={[
               {
                 required: true,
-                message: "Please enter license plates",
+                message: "Vui lòng nhập biển số xe",
               },
             ]}
             name="license"
           >
-            <Input placeholder="Enter license plates. Example: 30A11285" />
+            <Input placeholder="Nhập biển số xe. Ví dụ: 30K16828" />
           </Form.Item>
           <Form.Item
             rules={[
               {
                 required: true,
-                message: "Please choose car parking",
+                message: "Vui lòng lựa chọn bãi đỗ xe",
               },
             ]}
             name="car-parking"
           >
-            <Select placeholder="Choose car parking">
+            <Select placeholder="Chọn bãi đỗ xe">
               <Select.Option value="Phenikaa University">
-                Phenikaa University
+                Trường Đại học Phenikaa
               </Select.Option>
               <Select.Option value="Duong Noi Apartment Building">
-                Duong Noi Apartment Building
+                Chung cư Dương Nội
               </Select.Option>
               <Select.Option value="Xuan Mai Spark Tower">
-                Xuan Mai Spark Tower
+                Chung cư Xuân Mai
               </Select.Option>
             </Select>
           </Form.Item>
@@ -121,7 +129,7 @@ export default function Content() {
             rules={[
               {
                 required: true,
-                message: "Please choose date and time",
+                message: "Vui lòng chọn ngày và giờ",
               },
             ]}
             name="date"
@@ -130,21 +138,23 @@ export default function Content() {
               showTime
               showSecond={false}
               format="DD/MM/YYYY HH:mm"
-              placeholder={[
-                "Choose date and time start",
-                "Choose date and time end",
-              ]}
+              placeholder={["Chọn thời gian gửi xe", "Chọn thời gian lấy xe"]}
               ref={""}
               style={{ width: "100%" }}
             />
           </Form.Item>
           <Form.Item style={{ display: "flex", justifyContent: "center" }}>
             <Button type="primary" htmlType="submit">
-              Checkout
+              Đặt chỗ
             </Button>
           </Form.Item>
         </Form>
       </div>
+      <H11>Nhanh chóng</H11>
+      <H12
+      >
+        Thuận tiện
+      </H12>
     </div>
   );
 }
