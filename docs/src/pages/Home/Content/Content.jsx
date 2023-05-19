@@ -14,6 +14,7 @@ const { RangePicker } = DatePicker;
 
 export default function Content() {
   const check = localStorage.getItem("isLoggedIn") === "true";
+  const [form] = useForm();
   const handleCheckout = async (data) => {
     if (check) {
       try {
@@ -28,6 +29,14 @@ export default function Content() {
         };
         await addDoc(reservation, reservationData);
         console.log(reservation);
+        
+        Swal.fire({
+          title: "Đặt chỗ thành công",
+          text: "Bạn có thể kiểm tra thông tin tại trang Quản lý đặt chỗ",
+          confirmButtonColor: "#1677ff",
+          timer: 2000,
+        });
+        form.resetFields();
       } catch (error) {
         console.log(error);
       }
@@ -80,6 +89,7 @@ export default function Content() {
             maxWidth: 1000,
           }}
           onFinish={handleCheckout}
+          form={form}
         >
           <Form.Item
             name="name"
